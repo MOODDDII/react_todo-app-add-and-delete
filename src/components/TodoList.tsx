@@ -1,52 +1,45 @@
 import React from 'react';
 import { Todo } from '../types/Todo';
+import { TodoItem } from './TodoItem';
 
 interface TodoListProps {
   todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  tempTodo: Todo | null;
+  onDeleteTodo: (todoId: number) => Promise<void>;
+  onUpdateTodo: (todoId: number, updates: Partial<Todo>) => Promise<void>;
 }
 
-export const TodoList: React.FC<TodoListProps> = ({ todos, setTodos }) => {
+export const TodoList: React.FC<TodoListProps> = ({
+  todos,
+  tempTodo,
+  onDeleteTodo,
+  onUpdateTodo,
+}) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
+      <button
+        className="todoapp__mark-all"
+        data-cy="MarkAllButton"
+        onClick={() => {
+          todos.forEach(todo => onUpdateTodo(todo.id, { completed: true }));
+        }}
+        disabled={todos.every(todo => todo.completed)}
+      />
+
       {todos.map(todo => (
-        <div
+        <TodoItem
           key={todo.id}
-          data-cy="Todo"
-          className={`todo ${todo.completed ? 'completed' : ''}`}
-        >
-          <label className="todo__status-label">
-            <input
-              data-cy="TodoStatus"
-              type="checkbox"
-              className="todo__status"
-              checked={todo.completed}
-              onChange={() => {
-                setTodos(prevTodos =>
-                  prevTodos.map(t =>
-                    t.id === todo.id ? { ...t, completed: !t.completed } : t,
-                  ),
-                );
-              }}
-            />
-          </label>
-
-          <span data-cy="TodoTitle" className="todo__title">
-            {todo.title}
-          </span>
-
-          <button
-            type="button"
-            className="todo__remove"
-            data-cy="TodoDelete"
-            onClick={() => {
-              setTodos(prevTodos => prevTodos.filter(t => t.id !== todo.id));
-            }}
-          >
-            ×
-          </button>
-        </div>
+          todo={todo}
+          onDelete={onDeleteTodo}
+          onUpdate={onUpdateTodo}
+        />
       ))}
+
+      {tempTodo && (
+        <div className="todo">
+          <div className="loader"></div>
+        </div>
+      )}
     </section>
   );
 };
