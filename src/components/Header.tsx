@@ -11,11 +11,12 @@ export const Header: React.FC<HeaderProps> = ({ onAddTodo, onMarkAllAsCompleted 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const trimmedTitle = title.trim();
-    if (trimmedTitle) {
-      onAddTodo(trimmedTitle);
-      setTitle('');
+    if (!title.trim()) {
+      return;
     }
+
+    onAddTodo(title.trim());
+    setTitle('');
   };
 
   return (
@@ -33,7 +34,7 @@ export const Header: React.FC<HeaderProps> = ({ onAddTodo, onMarkAllAsCompleted 
           className="todoapp__new-todo"
           placeholder="What needs to be done?"
           value={title}
-          onChange={e => setTitle(e.target.value)}
+          onChange={(e) => setTitle(e.target.value)}
         />
       </form>
     </header>

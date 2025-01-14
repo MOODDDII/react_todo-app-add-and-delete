@@ -21,12 +21,13 @@ export const Footer: React.FC<FooterProps> = ({
       </span>
 
       <nav className="filter" data-cy="Filter">
-        {Object.values(Filter).map(value => (
+        {Object.values(Filter).map((value) => (
           <a
             key={value}
             href={`#/${value}`}
             className={`filter__link ${filter === value ? 'selected' : ''}`}
             onClick={() => setFilter(value)}
+            data-cy={`FilterLink${value.charAt(0).toUpperCase() + value.slice(1)}`}
           >
             {value.charAt(0).toUpperCase() + value.slice(1)}
           </a>

@@ -15,6 +15,10 @@ export const TodoList: React.FC<TodoListProps> = ({
   onDeleteTodo,
   onUpdateTodo,
 }) => {
+  if (todos.length === 0 && !tempTodo) {
+    return null;
+  }
+
   return (
     <section className="todoapp__main" data-cy="TodoList">
       <button
