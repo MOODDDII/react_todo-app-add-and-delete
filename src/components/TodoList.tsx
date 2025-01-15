@@ -15,21 +15,8 @@ export const TodoList: React.FC<TodoListProps> = ({
   onDeleteTodo,
   onUpdateTodo,
 }) => {
-  if (todos.length === 0 && !tempTodo) {
-    return null;
-  }
-
   return (
     <section className="todoapp__main" data-cy="TodoList">
-      <button
-        className="todoapp__mark-all"
-        data-cy="MarkAllButton"
-        onClick={() => {
-          todos.forEach(todo => onUpdateTodo(todo.id, { completed: true }));
-        }}
-        disabled={todos.every(todo => todo.completed)}
-      />
-
       {todos.map(todo => (
         <TodoItem
           key={todo.id}
@@ -40,7 +27,8 @@ export const TodoList: React.FC<TodoListProps> = ({
       ))}
 
       {tempTodo && (
-        <div className="todo">
+        <div className="todo todo--temp">
+          <span className="todo__title">{tempTodo.title}</span>
           <div className="loader"></div>
         </div>
       )}

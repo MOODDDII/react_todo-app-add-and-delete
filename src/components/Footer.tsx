@@ -21,7 +21,7 @@ export const Footer: React.FC<FooterProps> = ({
       </span>
 
       <nav className="filter" data-cy="Filter">
-        {Object.values(Filter).map((value) => (
+        {Object.values(Filter).map(value => (
           <a
             key={value}
             href={`#/${value}`}
@@ -39,6 +39,7 @@ export const Footer: React.FC<FooterProps> = ({
         className="todoapp__clear-completed"
         data-cy="ClearCompletedButton"
         onClick={clearCompleted}
+        disabled={todosCount === 0}
       >
         Clear completed
       </button>

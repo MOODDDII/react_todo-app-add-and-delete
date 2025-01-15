@@ -16,22 +16,21 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     getTodos()
-      .then((loadedTodos) => {
+      .then(loadedTodos => {
         setTodos(loadedTodos);
         setIsLoading(false);
       })
       .catch(() => {
         setError('Unable to load todos');
         setIsLoading(false);
-        setTimeout(() => {
-          setError('');
-        }, 3000);
+        setTimeout(() => setError(''), 3000);
       });
   }, []);
 
   const handleAddTodo = async (title: string): Promise<void> => {
     if (!title.trim()) {
       setError('Title should not be empty');
+      setTimeout(() => setError(''), 3000);
       return;
     }
 
@@ -45,67 +44,62 @@ export const App: React.FC = () => {
     setTempTodo(newTodo);
 
     try {
-      const createdTodo = await createTodo({
-        userId: 1878,
-        title: title.trim(),
-        completed: false,
-      });
-
-      setTodos((prevTodos) => [...prevTodos, createdTodo]);
+      const createdTodo = await createTodo(newTodo);
+      setTodos(prevTodos => [...prevTodos, createdTodo]);
       setTempTodo(null);
-      return;
     } catch {
       setError('Unable to add a todo');
       setTempTodo(null);
-      return;
+      setTimeout(() => setError(''), 3000);
     }
   };
 
   const handleDeleteTodo = async (todoId: number): Promise<void> => {
     try {
       await deleteTodo(todoId);
-      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== todoId));
-      return;
+      setTodos(prevTodos => prevTodos.filter(todo => todo.id !== todoId));
     } catch {
       setError('Unable to delete a todo');
-      return;
+      setTimeout(() => setError(''), 3000);
     }
   };
 
-  const handleUpdateTodo = async (todoId: number, updates: Partial<Todo>): Promise<void> => {
+  const handleUpdateTodo = async (
+    todoId: number,
+    updates: Partial<Todo>
+  ): Promise<void> => {
     try {
       const updatedTodo = await updateTodo(todoId, updates);
-      setTodos((prevTodos) =>
-        prevTodos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo))
+      setTodos(prevTodos =>
+        prevTodos.map(todo =>
+          todo.id === updatedTodo.id ? updatedTodo : todo
+        )
       );
-      return;
     } catch {
       setError('Unable to update a todo');
-      return;
+      setTimeout(() => setError(''), 3000);
     }
   };
 
   const clearCompleted = async (): Promise<void> => {
-    const completedTodos = todos.filter((todo) => todo.completed);
+    const completedTodos = todos.filter(todo => todo.completed);
 
     try {
       await Promise.all(
-        completedTodos.map((todo) =>
-          deleteTodo(todo.id).catch(() => {
-            setError('Unable to delete some todos');
-          })
+        completedTodos.map(todo =>
+          deleteTodo(todo.id).catch(() =>
+            setError('Unable to delete some todos')
+          )
         )
       );
-
-      setTodos((prevTodos) => prevTodos.filter((todo) => !todo.completed));
-      return;
+      setTodos(prevTodos => prevTodos.filter(todo => !todo.completed));
     } catch {
       setError('Error clearing completed todos');
-      return;
+      setTimeout(() => setError(''), 3000);
     }
   };
 
-  const filteredTodos = todos.filter((todo) => {
+  const filteredTodos = todos.filter(todo => {
     switch (filter) {
       case Filter.Active:
         return !todo.completed;
@@ -131,7 +125,10 @@ export const App: React.FC = () => {
       )}
 
       {error && (
-        <div className="notification is-danger is-light" data-cy="ErrorNotification">
+        <div
+          className="notification is-danger is-light"
+          data-cy="ErrorNotification"
+        >
           <button
             type="button"
             className="delete"
@@ -147,8 +144,9 @@ export const App: React.FC = () => {
           <Header
             onAddTodo={handleAddTodo}
             onMarkAllAsCompleted={() => {
-              setTodos((prevTodos) =>
-                prevTodos.map((todo) => ({ ...todo, completed: true })))
+              setTodos(prevTodos =>
+                prevTodos.map(todo => ({ ...todo, completed: true }))
+              );
             }}
           />
           <TodoList
@@ -161,7 +159,7 @@ export const App: React.FC = () => {
             <Footer
               filter={filter}
               setFilter={setFilter}
-              todosCount={todos.filter((todo) => !todo.completed).length}
+              todosCount={todos.filter(todo => !todo.completed).length}
               clearCompleted={clearCompleted}
             />
           )}
