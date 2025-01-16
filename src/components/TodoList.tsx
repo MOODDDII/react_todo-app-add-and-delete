@@ -39,8 +39,10 @@ export const TodoList: React.FC<TodoListProps> = ({
               checked={tempTodo.completed}
             />
           </label>
-          <span className="todo__title">{tempTodo.title}</span>
-          <div className="loader"></div>
+          <span className="todo__title">
+            {tempTodo.title}
+            <div className="loader loader-position"></div>
+          </span>
         </div>
       )}
     </section>
