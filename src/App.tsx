@@ -13,6 +13,7 @@ export const App: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [filter, setFilter] = useState<Filter>(Filter.All);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [loadingTodoIds, setLoadingTodoIds] = useState<number[]>([]);
 
   useEffect(() => {
     getTodos()
@@ -55,12 +56,15 @@ export const App: React.FC = () => {
   };
 
   const handleDeleteTodo = async (todoId: number): Promise<void> => {
+    setLoadingTodoIds(prev => [...prev, todoId]);
     try {
       await deleteTodo(todoId);
       setTodos(prevTodos => prevTodos.filter(todo => todo.id !== todoId));
     } catch {
       setError('Unable to delete a todo');
       setTimeout(() => setError(''), 3000);
+    } finally {
+      setLoadingTodoIds(prev => prev.filter(id => id !== todoId));
     }
   };
 
@@ -154,6 +158,7 @@ export const App: React.FC = () => {
             tempTodo={tempTodo}
             onDeleteTodo={handleDeleteTodo}
             onUpdateTodo={handleUpdateTodo}
+            loadingTodoIds={loadingTodoIds}
           />
           {todos.length > 0 && (
             <Footer

@@ -5,9 +5,15 @@ interface TodoItemProps {
   todo: Todo;
   onDelete: (todoId: number) => void;
   onUpdate: (todoId: number, updates: Partial<Todo>) => void;
+  isLoading: boolean;
 }
 
-export const TodoItem: React.FC<TodoItemProps> = ({ todo, onDelete, onUpdate }) => {
+export const TodoItem: React.FC<TodoItemProps> = ({
+  todo,
+  onDelete,
+  onUpdate,
+  isLoading,
+}) => {
   return (
     <div
       key={todo.id}
@@ -21,6 +27,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onDelete, onUpdate }) 
           className="todo__status"
           checked={todo.completed}
           onChange={() => onUpdate(todo.id, { completed: !todo.completed })}
+          disabled={isLoading}
         />
       </label>
 
@@ -33,8 +40,13 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onDelete, onUpdate }) 
         className="todo__remove"
         data-cy="TodoDelete"
         onClick={() => onDelete(todo.id)}
+        disabled={isLoading}
       >
-        ×
+        {isLoading ? (
+          <div className="loader delete-loader"></div>
+        ) : (
+          '×'
+        )}
       </button>
     </div>
   );

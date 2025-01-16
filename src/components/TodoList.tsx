@@ -7,6 +7,7 @@ interface TodoListProps {
   tempTodo: Todo | null;
   onDeleteTodo: (todoId: number) => Promise<void>;
   onUpdateTodo: (todoId: number, updates: Partial<Todo>) => Promise<void>;
+  loadingTodoIds: number[];
 }
 
 export const TodoList: React.FC<TodoListProps> = ({
@@ -14,6 +15,7 @@ export const TodoList: React.FC<TodoListProps> = ({
   tempTodo,
   onDeleteTodo,
   onUpdateTodo,
+  loadingTodoIds,
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
@@ -23,11 +25,20 @@ export const TodoList: React.FC<TodoListProps> = ({
           todo={todo}
           onDelete={onDeleteTodo}
           onUpdate={onUpdateTodo}
+          isLoading={loadingTodoIds.includes(todo.id)}
         />
       ))}
 
       {tempTodo && (
-        <div className="todo todo--temp">
+        <div className="todo todo--temp" data-cy="TempTodo">
+          <label className="todo__status-label">
+            <input
+              type="checkbox"
+              className="todo__status"
+              disabled
+              checked={tempTodo.completed}
+            />
+          </label>
           <span className="todo__title">{tempTodo.title}</span>
           <div className="loader"></div>
         </div>
