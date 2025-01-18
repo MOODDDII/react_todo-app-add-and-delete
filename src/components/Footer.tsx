@@ -1,5 +1,6 @@
 import React from 'react';
 import { Filter } from '../types/Filter';
+import classNames from 'classnames';
 
 interface FooterProps {
   filter: Filter;
@@ -23,14 +24,14 @@ export const Footer: React.FC<FooterProps> = ({
       <nav className="filter" data-cy="Filter">
         {Object.values(Filter).map(value => (
           <a
-            key={value}
-            href={`#/${value}`}
-            className={`filter__link ${filter === value ? 'selected' : ''}`}
-            onClick={() => setFilter(value)}
-            data-cy={`FilterLink${value.charAt(0).toUpperCase() + value.slice(1)}`}
-          >
-            {value.charAt(0).toUpperCase() + value.slice(1)}
-          </a>
+          key={value}
+          href={`#/${value}`}
+          className={classNames('filter__link', { selected: filter === value })} // Used classnames
+          onClick={() => setFilter(value)}
+          data-cy={`FilterLink${value.charAt(0).toUpperCase() + value.slice(1)}`}
+        >
+          {value.charAt(0).toUpperCase() + value.slice(1)}
+        </a>
         ))}
       </nav>
 

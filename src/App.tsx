@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import classNames from 'classnames';
 import { getTodos, createTodo, deleteTodo, updateTodo } from './api/todos';
 import { Todo } from './types/Todo';
 import { Header } from './components/Header';
@@ -15,17 +16,16 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingTodoIds, setLoadingTodoIds] = useState<number[]>([]);
 
+  const userId = 1878;
+
   useEffect(() => {
     getTodos()
-      .then(loadedTodos => {
-        setTodos(loadedTodos);
-        setIsLoading(false);
-      })
+      .then(setTodos)
       .catch(() => {
         setError('Unable to load todos');
-        setIsLoading(false);
         setTimeout(() => setError(''), 3000);
-      });
+      })
+      .finally(() => setIsLoading(false));
   }, []);
 
   const handleAddTodo = async (title: string): Promise<void> => {
@@ -37,7 +37,7 @@ export const App: React.FC = () => {
 
     const newTodo: Todo = {
       id: 0,
-      userId: 1878,
+      userId,
       title: title.trim(),
       completed: false,
     };
@@ -85,6 +85,12 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleMarkAllAsCompleted = (): void => {
+    setTodos(prevTodos =>
+      prevTodos.map(todo => ({ ...todo, completed: true }))
+    );
+  };
+
   const clearCompleted = async (): Promise<void> => {
     const completedTodos = todos.filter(todo => todo.completed);
 
@@ -114,7 +120,7 @@ export const App: React.FC = () => {
     }
   });
 
-  if (!1878) {
+  if (!userId) {
     return <UserWarning />;
   }
 
@@ -130,7 +136,11 @@ export const App: React.FC = () => {
 
       {error && (
         <div
-          className="notification is-danger is-light"
+          className={classNames(
+            'notification',
+            'is-danger',
+            'is-light'
+          )}
           data-cy="ErrorNotification"
         >
           <button
@@ -147,11 +157,7 @@ export const App: React.FC = () => {
         <>
           <Header
             onAddTodo={handleAddTodo}
-            onMarkAllAsCompleted={() => {
-              setTodos(prevTodos =>
-                prevTodos.map(todo => ({ ...todo, completed: true }))
-              );
-            }}
+            onMarkAllAsCompleted={handleMarkAllAsCompleted}
           />
           <TodoList
             todos={filteredTodos}

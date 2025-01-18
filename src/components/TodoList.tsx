@@ -1,6 +1,6 @@
 import React from 'react';
+import classNames from 'classnames';
 import { Todo } from '../types/Todo';
-import { TodoItem } from './TodoItem';
 
 interface TodoListProps {
   todos: Todo[];
@@ -20,13 +20,40 @@ export const TodoList: React.FC<TodoListProps> = ({
   return (
     <section className="todoapp__main" data-cy="TodoList">
       {todos.map(todo => (
-        <TodoItem
+        <div
           key={todo.id}
-          todo={todo}
-          onDelete={onDeleteTodo}
-          onUpdate={onUpdateTodo}
-          isLoading={loadingTodoIds.includes(todo.id)}
-        />
+          data-cy="Todo"
+          className={classNames('todo', { completed: todo.completed })}
+        >
+          <label className="todo__status-label">
+            <input
+              data-cy="TodoStatus"
+              type="checkbox"
+              className="todo__status"
+              checked={todo.completed}
+              onChange={() => onUpdateTodo(todo.id, { completed: !todo.completed })}
+              disabled={loadingTodoIds.includes(todo.id)}
+            />
+          </label>
+
+          <span data-cy="TodoTitle" className="todo__title">
+            {todo.title}
+          </span>
+
+          <button
+            type="button"
+            className="todo__remove"
+            data-cy="TodoDelete"
+            onClick={() => onDeleteTodo(todo.id)}
+            disabled={loadingTodoIds.includes(todo.id)}
+          >
+            {loadingTodoIds.includes(todo.id) ? (
+              <div className="loader delete-loader"></div>
+            ) : (
+              '×'
+            )}
+          </button>
+        </div>
       ))}
 
       {tempTodo && (
