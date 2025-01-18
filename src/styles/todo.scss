@@ -150,12 +150,6 @@
   overflow: hidden;
 }
 
-.loader-position {
-  position: absolute;
-  top: 17.594px;
-  right: 5px;
-  transform: translateY(-17.594px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.loader-margin {
+  margin-left: 70px;
 }

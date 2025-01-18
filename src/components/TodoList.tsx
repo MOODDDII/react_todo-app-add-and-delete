@@ -41,7 +41,7 @@ export const TodoList: React.FC<TodoListProps> = ({
           </label>
           <span className="todo__title">
             {tempTodo.title}
-            <div className="loader loader-position"></div>
+            <div className="loader loader-margin"></div>
           </span>
         </div>
       )}
