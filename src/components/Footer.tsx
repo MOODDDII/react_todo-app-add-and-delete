@@ -26,7 +26,7 @@ export const Footer: React.FC<FooterProps> = ({
           <a
           key={value}
           href={`#/${value}`}
-          className={classNames('filter__link', { selected: filter === value })} // Used classnames
+          className={classNames('filter__link', { selected: filter === value })}
           onClick={() => setFilter(value)}
           data-cy={`FilterLink${value.charAt(0).toUpperCase() + value.slice(1)}`}
         >
