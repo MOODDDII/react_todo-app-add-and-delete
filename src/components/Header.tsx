@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 interface HeaderProps {
-  onAddTodo: (title: string) => void;
+  onAddTodo: (title: string) => Promise<void>;
   onMarkAllAsCompleted: () => void;
 }
 
@@ -10,23 +10,29 @@ export const Header: React.FC<HeaderProps> = ({
   onMarkAllAsCompleted,
 }) => {
   const [title, setTitle] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const trimmedTitle = title.trim();
 
-    if (!trimmedTitle) {
+    if (!trimmedTitle || isSubmitting) {
       return;
     }
 
-    onAddTodo(trimmedTitle);
-    setTitle('');
+    setIsSubmitting(true);
+    try {
+      await onAddTodo(trimmedTitle);
+    } finally {
+      setIsSubmitting(false);
+      setTitle('');
+    }
   };
 
   return (
@@ -46,6 +52,7 @@ export const Header: React.FC<HeaderProps> = ({
           placeholder="What needs to be done?"
           value={title}
           onChange={e => setTitle(e.target.value)}
+          disabled={isSubmitting}
         />
       </form>
     </header>

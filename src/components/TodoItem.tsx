@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { Todo } from '../types/Todo';
 
 interface TodoItemProps {
@@ -18,7 +19,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
     <div
       key={todo.id}
       data-cy="Todo"
-      className={`todo ${todo.completed ? 'completed' : ''}`}
+      className={classNames('todo', { completed: todo.completed })}
     >
       <label className="todo__status-label">
         <input
